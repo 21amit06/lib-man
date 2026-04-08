@@ -4,7 +4,6 @@ const cors = require("cors");
 const connectDB = require("./config/db");
 
 dotenv.config();
-connectDB();
 
 const app = express();
 
@@ -17,8 +16,16 @@ app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/lend", require("./routes/lendingRoutes"));
 app.use("/api/payment", require("./routes/paymentRoutes"));
 
-const PORT = process.env.PORT || 5000;
+// ✅ NEW START LOGIC
+const startServer = async () => {
+  try {
+    await connectDB();
+    app.listen(process.env.PORT, () => {
+      console.log("Server running on port", process.env.PORT);
+    });
+  } catch (err) {
+    console.error(err);
+  }
+};
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+startServer();
